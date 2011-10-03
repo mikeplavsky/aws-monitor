@@ -1,9 +1,9 @@
 var aws = require ('aws-lib');
+var evs = require('events');
 var _ = require('underscore');
 
 module.exports = function describe_instances(opts) {
 
-  var evs = require('events');
   var events = new evs.EventEmitter();
 
   var ec2 = aws.createEC2Client(opts.access_key_id, opts.secret_access_key, {version:'2011-07-15'});
