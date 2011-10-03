@@ -1,11 +1,8 @@
 var aws = require ('aws-lib');
 var _ = require('underscore');
 
-var EventEmitter = require('events').EventEmitter;
+module.exports = function describe_instances(opts,events) {
 
-module.exports = function describe_instances(opts) {
-
-  var events = new EventEmitter();
   var ec2 = aws.createEC2Client(
   
     opts.access_key_id, 
@@ -19,9 +16,9 @@ module.exports = function describe_instances(opts) {
     {"Filter.1.Name": 'instance-state-name', 'Filter.1.Value': 'running'},
 
     function(res) {
-
+  
       if (res.Errors) {
-        events.emit( 'error', res );
+        events.emit('error', opts, res);
         return;
       }
       
@@ -32,7 +29,7 @@ module.exports = function describe_instances(opts) {
         var instances = _.pluck(_.pluck(items,'instancesSet'),'item');
 
         _.each( instances, function(i) {
-            events.emit("data", i);
+            events.emit('data', opts, i);
         });
 
       }
