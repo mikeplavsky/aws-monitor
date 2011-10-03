@@ -1,11 +1,18 @@
 var aws = require ('aws-lib');
-var EventEmitter = require('events').EventEmitter;
 var _ = require('underscore');
+
+var EventEmitter = require('events').EventEmitter;
 
 module.exports = function describe_instances(opts) {
 
   var events = new EventEmitter();
-  var ec2 = aws.createEC2Client(opts.access_key_id, opts.secret_access_key, {version:'2011-07-15'});
+  var ec2 = aws.createEC2Client(
+  
+    opts.access_key_id, 
+    opts.secret_access_key, 
+    {version:'2011-07-15'}
+
+  );
 
   ec2.call( "DescribeInstances", 
     
