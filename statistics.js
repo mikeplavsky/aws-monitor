@@ -1,4 +1,5 @@
 var aws = require('aws-lib');
+var util = require('util');
 
 module.exports = function get_metrics_statistics(opts,instance) {
 
@@ -13,21 +14,26 @@ module.exports = function get_metrics_statistics(opts,instance) {
 
   );
 
+  var start = new Date();
+  var end = new Date(start);
+
+  start.setMinutes(start.getMinutes()-10);
+  
   acw.call( 
     'GetMetricStatistics', 
     {
-      'Namespace': 'AWS',
-      'Service': 'EC2',
+      'Namespace': 'AWS/EC2',
       'MetricName': 'CPUUtilization',
-      'StartTime': '2011-10-01',
-      'EndTime': '2011-10-03',
+      'StartTime': start.toISOString(),
+      'EndTime': end.toISOString(),
       'Period': '600',
-      'Statistics.member.1' : 'Maximum',
-      'MetricData.member.1.Dimensions.member.1.Name': 'InstanceID',
-      'MetricData.member.1.Dimensions.member.1.Value': 'instance.InstanceID'
+      'Statistics.member' : 'Average',
+      'Dimensions.member.Name': 'InstanceId',
+      'Dimensions.member.Value': instance.instanceId,
+      'Unit' : 'Percent'
     },
     function(res) {
-      console.log(res);
+      console.log(opts.account, instance.instanceId,util.inspect(res,true,null));
     }
   );
 }
